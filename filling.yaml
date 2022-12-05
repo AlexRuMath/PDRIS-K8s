@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: filling
+  labels:
+    app: filling
+
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: filling
+  template:
+    metadata:
+      labels:
+        app: filling
+    spec:
+      containers:
+        - name: filling
+          image: alexrumath/filling-service
+          ports:
+            - containerPort: 3000
+          env:
+            - name: MONGO_URL
+              value: mongodb://mongo:27017/dev
+          imagePullPolicy: Always
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: filling
+spec:
+  selector:
+    app: filling
+  ports:
+    - port: 3000
+      targetPort: 3000
+  type: LoadBalancer
